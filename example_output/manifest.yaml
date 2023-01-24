@@ -1,0 +1,65 @@
+observation:
+  bandwidth_mhz: !!python/object/apply:numpy._core.multiarray.scalar
+  - &id001 !!python/object/apply:numpy.dtype
+    args:
+    - f8
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - <
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    AAAAAAAAUEA=
+  center_frequency_mhz: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    AAAAAADwlkA=
+  duration_sec: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    AAAAAAAAJEA=
+  file_hash: null
+  file_path: synthetic_data
+  format: synthetic
+  source_name: Synthetic_Pulsar
+  start_time: '2020-05-31T00:00:00.000'
+provenance:
+- action: generate_synthetic
+  parameters:
+    dm: 50.0
+    duration: 10.0
+    period: 0.1
+    snr: 3.0
+  timestamp: '2026-09-16T19:37:59.881427+00:00'
+- action: apply_rfi_mask
+  parameters:
+    mask_shape: !!python/tuple
+    - 10000
+    - 64
+  timestamp: '2026-09-16T19:37:59.888310+00:00'
+- action: dedisperse
+  parameters:
+    dm: 50.0
+    ref_freq: null
+  timestamp: '2026-09-16T19:37:59.899107+00:00'
+- action: fold
+  parameters:
+    n_bins: 128
+    n_subbands: 16
+    n_subints: 16
+    period: 0.1
+results:
+  dm: 0.0
+  n_bins: 128
+  n_subbands: 16
+  n_subints: 16
+  period: 0.1
+software:
+  name: PulsarFold
+  version: 0.1.0

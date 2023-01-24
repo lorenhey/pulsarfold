@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Output
+*.npz
+*.pdf
+*.png
+*.fil
+synthetic_data
+
+# Distribution
+build/
+dist/
+*.egg-info/
