@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulsarFold v2.0.0 | Astrophysical Workbench for Incoherent Dedispersion &amp; Epoch Folding</title>
+  <meta name="description" content="Banco interactivo de astrofísica observacional para dedispersión de plasma frío, plegado de pulsares por épocas, optimización de DM y sonificación en Web Audio.">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- KaTeX for Scientific & Mathematical Rigor -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+NWtTlCXcAb9Ud82lTDYP5U9o60UCbFGJwqhUfbndIKZh7" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>PulsarFold <span class="brand-badge">v2.0.0</span></h1>
+        <div class="brand-tagline">Banco Astrofísico de Incoherente Dedispersión, Plegado por Épocas y Sonificación</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-export-json" class="btn-header" title="Exportar reporte astrofísico en JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Exportar JSON
+      </button>
+      <button id="btn-export-csv" class="btn-header" title="Descargar perfil integrado en CSV">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        Exportar CSV
+      </button>
+      <a href="https://github.com/lorenhey/pulsarfold" target="_blank" rel="noopener noreferrer" class="btn-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="app-nav">
+    <button class="nav-tab active" data-target="tab-folding">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      Espectro de Fase &amp; Plegado
+    </button>
+    <button class="nav-tab" data-target="tab-freq-phase">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+      Mapa Fase-Frecuencia (Dedispersión)
+    </button>
+    <button class="nav-tab" data-target="tab-dm-opt">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+      Optimización DM &amp; Curva S/N
+    </button>
+    <button class="nav-tab" data-target="tab-sonification">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      Sonificación Astrofísica
+    </button>
+    <button class="nav-tab" data-target="tab-theory">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+      Terminal CLI &amp; Tratado Teórico
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="app-main">
+
+    <!-- KPI Metric Cards Banner -->
+    <section class="kpi-grid">
+      <div class="kpi-card" style="--card-accent: var(--accent-cyan);">
+        <div class="kpi-title">Relación Señal-Ruido (S/N)</div>
+        <div id="kpi-snr" class="kpi-value">--</div>
+        <div class="kpi-subtext">Significancia estadística (σ)</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-gold);">
+        <div class="kpi-title">Medida de Dispersión (DM)</div>
+        <div id="kpi-dm" class="kpi-value">--</div>
+        <div class="kpi-subtext">Densidad columna (pc cm⁻³)</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-pink);">
+        <div class="kpi-title">Período de Rotación P</div>
+        <div id="kpi-period" class="kpi-value">--</div>
+        <div class="kpi-subtext">Tiempo entre pulsos (ms)</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-purple);">
+        <div class="kpi-title">Chi-Cuadrado Reducido (χ²_red)</div>
+        <div id="kpi-chi2" class="kpi-value">--</div>
+        <div class="kpi-subtext">Hipótesis nula plana</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-green);">
+        <div class="kpi-title">Ancho de Pulso (W50 / FWHM)</div>
+        <div id="kpi-pulse-width" class="kpi-value">--</div>
+        <div class="kpi-subtext">Fracción del ciclo de fase</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: #38bdf8;">
+        <div class="kpi-title">Frecuencia de Giro</div>
+        <div id="kpi-rot-freq" class="kpi-value">--</div>
+        <div class="kpi-subtext">Rotaciones por segundo (Hz)</div>
+      </div>
+    </section>
+
+    <!-- TAB 1: Espectro de Fase & Plegado -->
+    <div id="tab-folding" class="tab-content active">
+      <div class="workbench-grid">
+
+        <!-- Controls Sidebar -->
+        <aside class="workbench-controls">
+          <div class="panel-card">
+            <div class="panel-title">
+              <span>Púlsar de Observación</span>
+            </div>
+            <div class="control-group">
+              <div class="control-item">
+                <select id="pulsar-select" class="form-control">
+                  <option value="vela-b0833">PSR B0833-45 (Vela Pulsar - P: 89.33 ms, DM: 67.97)</option>
+                  <option value="crab-b0531">PSR B0531+21 (Crab Pulsar - P: 33.39 ms, DM: 56.77)</option>
+                  <option value="j0437-4715">PSR J0437-4715 (Milisegundo - P: 5.76 ms, DM: 2.64)</option>
+                  <option value="b1919-21">PSR B1919+21 (Jocelyn Bell LGM-1 - P: 1.34 s, DM: 12.44)</option>
+                  <option value="frb-high-dm">Transitorio de Alto DM (FRB Simulado - DM: 180.0)</option>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <label for="colormap-select" class="control-label-row">
+                  <span>Paleta Falso Color (Heatmap):</span>
+                </label>
+                <select id="colormap-select" class="form-control">
+                  <option value="turbo">Google Turbo (Espectro Completo)</option>
+                  <option value="magma">Magma (Percepción Lineal)</option>
+                  <option value="matrixCyan">Matrix Cyan (Astrofísica)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-title">
+              <span>Ajuste de Parámetros de Plegado</span>
+            </div>
+            <div class="control-group">
+              <!-- DM Slider -->
+              <div class="control-item">
+                <div class="control-label-row">
+                  <span>Medida Dispersión Ensayo (DM):</span>
+                  <span id="val-dm" class="control-val-badge">67.97 pc/cm³</span>
+                </div>
+                <input type="range" id="slider-dm" min="0" max="140" step="0.2" value="67.97">
+              </div>
+
+              <!-- Period Slider -->
+              <div class="control-item">
+                <div class="control-label-row">
+                  <span>Período de Plegado P:</span>
+                  <span id="val-period" class="control-val-badge">89.328 ms</span>
+                </div>
+                <input type="range" id="slider-period" min="85.0" max="94.0" step="0.01" value="89.328">
+              </div>
+
+              <!-- Bins Slider -->
+              <div class="control-item">
+                <div class="control-label-row">
+                  <span>Resolución de Fase (Bins):</span>
+                  <span id="val-bins" class="control-val-badge">128</span>
+                </div>
+                <input type="range" id="slider-bins" min="32" max="256" step="32" value="128">
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 6px;">
+                <button id="btn-optimize-dm" class="btn-audio btn-pulse" style="flex: 1;">
+                  Optimizar DM (Pico S/N)
+                </button>
+                <button id="btn-reset-params" class="btn-header">
+                  Restablecer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sonification Panel Card -->
+          <div class="panel-card">
+            <div class="panel-title">
+              <span>Sonificación Astrofísica</span>
+            </div>
+            <div class="playback-bar">
+              <div class="btn-audio-row">
+                <button id="btn-play-dedisp" class="btn-audio btn-pulse" title="Escuchar pulsos limpios alineados">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  Dedispersado
+                </button>
+                <button id="btn-play-disp" class="btn-audio" title="Escuchar barrido de frecuencia por plasma">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                  Barrido ISM
+                </button>
+              </div>
+              <button id="btn-stop-audio" class="btn-audio btn-stop">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
+                Silenciar
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Visualizers Column -->
+        <section class="workbench-displays">
+          
+          <!-- Heatmap Subints vs Phase -->
+          <div class="display-card">
+            <div class="display-header">
+              <div class="display-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+                Sub-integraciones Temporales vs. Fase del Pulso (Tiempo vs. φ)
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
+                Fase Rotacional: 0.0 &rarr; 1.0
+              </div>
+            </div>
+            <div class="heatmap-container">
+              <canvas id="canvas-time-phase" class="heatmap-canvas" width="900" height="240"></canvas>
+            </div>
+          </div>
+
+          <!-- Integrated Profile I(phase) -->
+          <div class="display-card">
+            <div class="display-header">
+              <div class="display-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                Perfil Integrado Colapsado I(φ) y Región Off-Pulse
+              </div>
+            </div>
+            <div id="container-prof-1d" class="profile-svg-container"></div>
+          </div>
+
+        </section>
+      </div>
+    </div>
+
+    <!-- TAB 2: Mapa Fase-Frecuencia (Dedispersión) -->
+    <div id="tab-freq-phase" class="tab-content">
+      <div class="display-card">
+        <div class="display-header">
+          <div class="display-title">
+            Sub-bandas de Frecuencia vs. Fase del Pulso (Espectro Dinámico Dedispersado)
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 14px;">
+          Evidencia la dispersión interestelar de plasma frío. Si el $DM$ ensayo difiere del valor real, la señal describe una curvatura hiperbólica cuadrática ($\nu^{-2}$). Cuando el $DM$ es exacto, toda la energía se alinea verticalmente en una columna estricta en fase.
+        </p>
+        <div class="heatmap-container" style="height: 360px;">
+          <canvas id="canvas-freq-phase" class="heatmap-canvas" width="900" height="360"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Optimización DM & Curva S/N -->
+    <div id="tab-dm-opt" class="tab-content">
+      <div class="display-card">
+        <div class="display-header">
+          <div class="display-title">
+            Curva de Detección: Relación Señal-Ruido (S/N) en función de la Medida de Dispersión
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 14px;">
+          Escaneo metrológico de ensayo. El pico pronunciado en la curva revela el $DM$ físico que maximiza la coherencia de fase del perfil integrado y la prueba de $\chi^2_{\text{red}}$.
+        </p>
+        <div id="container-dm-opt" class="profile-svg-container" style="height: 320px;"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Sonificación Astrofísica -->
+    <div id="tab-sonification" class="tab-content">
+      <div class="display-card">
+        <div class="display-header">
+          <div class="display-title">
+            Laboratorio de Sonificación Acústica de Púlsares (Web Audio API)
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+          La frecuencia de rotación de las estrellas de neutrones abarca desde pulsos cardíacos lentos (B1919+21 a ~0.75 Hz) hasta zumbidos y tonos audibles musicales en pulsares de milisegundos (PSR J0437-4715 a 173.7 Hz, tono Fa/F3).
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="panel-card">
+            <h4 style="color: var(--accent-green); margin-bottom: 8px;">Modo A: Pulso Dedispersado (Rotación Limpia)</h4>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+              Emite clicks acústicos y tonos armónicos sincronizados exactamente al período físico $P$. Permite apreciar el ritmo intrínseco del faro cósmico sin distorsión interestelar.
+            </p>
+          </div>
+          <div class="panel-card">
+            <h4 style="color: var(--accent-cyan); margin-bottom: 8px;">Modo B: Barrido Dispersado (Retardo de Plasma ISM)</h4>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+              Modula un barrido de frecuencia decreciente (*chirp*) en cada pulso, emulando la física del medio interestelar donde las ondas de radio de alta frecuencia viajan más rápido que las de baja frecuencia.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Terminal CLI & Tratado Teórico -->
+    <div id="tab-theory" class="tab-content">
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+
+        <!-- Terminal Console -->
+        <div class="cli-container">
+          <div class="cli-header-bar">
+            <div class="terminal-dots">
+              <span class="terminal-dot dot-red"></span>
+              <span class="terminal-dot dot-yellow"></span>
+              <span class="terminal-dot dot-green"></span>
+            </div>
+            <div>pulsarfold - astrophysical folding console (v2.0.0)</div>
+            <div>UTF-8 | Astro Core / Web Audio</div>
+          </div>
+          <div id="cli-terminal" class="cli-terminal"></div>
+          <div class="cli-input-row">
+            <span class="cli-input-prompt">pulsarfold:~$</span>
+            <input type="text" id="cli-input" class="cli-input" placeholder="Escribí un comando (help, catalog, load, dm, period, optimize, play, stop, snr, summary, report)..." autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <!-- KaTeX Physics Treatise -->
+        <article class="theory-article">
+          <h2>Fundamentos de Dispersión en Plasma Interestelar y Plegado por Épocas</h2>
+          <p>
+            Los púlsares emiten radiación electromagnética pulsada periódica de banda ancha. Al propagarse a través del medio interestelar (ISM), la radiación interactúa con los electrones libres del plasma ionizado galáctico, sufriendo dispersión cromática dependiente de la frecuencia.
+          </p>
+
+          <div class="theory-callout">
+            <strong>Ecuación de Dispersión de Plasma Frío:</strong><br>
+            La velocidad de grupo de la radiación electromagnética disminuye con la frecuencia, provocando que las frecuencias más bajas lleguen retrasadas respecto a las altas.
+          </div>
+
+          <h3>1. Medida de Dispersión (DM) y Retardo Temporal ($\Delta t$)</h3>
+          <p>
+            La <strong>Medida de Dispersión ($DM$)</strong> cuantifica la integral de la densidad de electrones libres $n_e$ a lo largo de la línea de visión hacia el púlsar a una distancia $d$:
+          </p>
+          <div class="math-block">
+            $$\text{DM} = \int_{0}^{d} n_e(l) \, dl \quad \left[ \text{pc cm}^{-3} \right]$$
+          </div>
+          <p>
+            El retardo de tiempo relativo $\Delta t$ entre una frecuencia de referencia alta $\nu_{\text{ref}}$ y una frecuencia observada $\nu$ (en $\text{MHz}$) viene gobernado rigurosamente por la constante de dispersión $k_{\text{DM}}$:
+          </p>
+          <div class="math-block">
+            $$\Delta t = k_{\text{DM}} \times \text{DM} \times \left( \frac{1}{\nu^2} - \frac{1}{\nu_{\text{ref}}^2} \right)$$
+            $$k_{\text{DM}} = \frac{e^2}{2\pi m_e c} \approx 4.148808 \times 10^3 \quad \left[ \text{MHz}^2 \, \text{pc}^{-1} \, \text{cm}^3 \, \text{s} \right]$$
+          </div>
+
+          <h3>2. Algoritmo de Plegado por Épocas (Epoch Folding)</h3>
+          <p>
+            Dado el flujo dedispersado en el tiempo $t$, la fase rotacional $\phi(t) \in [0, 1)$ respecto a una época $t_0$ y período $P$ se define como:
+          </p>
+          <div class="math-block">
+            $$\phi(t) = \left( \frac{t - t_0}{P} \right) \pmod 1$$
+          </div>
+          <p>
+            El intervalo de fase se discretiza en $N_{\text{bins}}$ bins. Al acumular $N_{\text{pulsos}}$ períodos, la señal coherente del púlsar crece proporcionalmente a $N$, mientras que el ruido térmico incoherente crece como $\sqrt{N}$, incrementando la relación señal-ruido por un factor $\propto \sqrt{N}$.
+          </p>
+
+          <h3>3. Métricas de Detección: Relación Señal-Ruido (S/N) y Chi-Cuadrado Reducido</h3>
+          <p>
+            Para evitar el sesgo por la emisión del pulso, el piso de ruido ($\mu_{\text{off}}, \sigma_{\text{off}}$) se evalúa sobre la región <em>off-pulse</em> (el 75% inferior de los bins ordenados en intensidad):
+          </p>
+          <div class="math-block">
+            $$\text{SNR} = \frac{I_{\max} - \mu_{\text{off}}}{\sigma_{\text{off}}}$$
+            $$\chi^2_{\text{red}} = \frac{1}{N_{\text{bins}} - 1} \sum_{b=1}^{N_{\text{bins}}} \frac{(I_b - \mu_{\text{off}})^2}{\sigma_{\text{off}}^2}$$
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <div>
+      <strong>PulsarFold v2.0.0</strong> &mdash; Desarrollado por <a href="https://github.com/lorenhey" target="_blank" rel="noopener noreferrer">Loren Hey</a> | Astrophysical Signal Processing &amp; Radio Astronomy
+    </div>
+    <div>
+      Licencia MIT | 100% Client-Side Engine (Zero Backend &amp; Web Audio Synth)
+    </div>
+  </footer>
+
+  <!-- Application Scripts -->
+  <script src="js/pulsar-engine.js"></script>
+  <script src="js/pulsar-catalog.js"></script>
+  <script src="js/pulsar-plotter.js"></script>
+  <script src="js/pulsar-cli.js"></script>
+  <script src="js/pulsar-app.js"></script>
+</body>
+</html>
